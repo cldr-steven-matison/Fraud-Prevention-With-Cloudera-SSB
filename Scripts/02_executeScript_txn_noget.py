@@ -156,31 +156,31 @@ class WriteContentCallback(OutputStreamCallback):
 ticks = 0 # ticks (virtual time basis for emits)
 fraud_tick = random.randint(FRAUD_TICK_MIN, FRAUD_TICK_MAX) 
 
-flowFile = session.get() 
-if (flowFile != None):
-    # All processing code starts at this indent
-    while True:
-     ticks += 1
-     fintran = create_fintran()   
-     fintransaction =  json.dumps(fintran)
-     #send_fintran(out_socket, json.dumps(fintran))
-     #print(fintransaction)
-     #newFlowFile = session.create()
-     flowFile = session.write(flowFile, WriteContentCallback(fintransaction))
-     session.transfer(flowFile, REL_SUCCESS)
-     session.commit();
 
-     sleep(DELAY)
-     if ticks > fraud_tick:
-        fraudtran = create_fraudtran(fintran)
-        fraudfintransaction=json.dumps(fraudtran)
-        #send_fintran(out_socket, json.dumps(fraudtran))
-        #print(fraudfintransaction)
-        flowFile = session.write(flowFile, WriteContentCallback(fraudfintransaction))
-        session.transfer(flowFile, REL_SUCCESS)
-        session.commit();
-        ticks = 0
-        fraud_tick = random.randint(FRAUD_TICK_MIN, FRAUD_TICK_MAX)
+# All processing code starts at this indent
+while True:
+ ticks += 1
+ fintran = create_fintran()   
+ fintransaction =  json.dumps(fintran)
+ #send_fintran(out_socket, json.dumps(fintran))
+ #print(fintransaction)
+ flowFile = session.create()
+ flowFile = session.write(flowFile, WriteContentCallback(fintransaction))
+ session.transfer(flowFile, REL_SUCCESS)
+ session.commit()
 
-# implicit return at the end
+ sleep(DELAY)
+ if ticks > fraud_tick:
+    fraudtran = create_fraudtran(fintran)
+    fraudfintransaction=json.dumps(fraudtran)
+    #send_fintran(out_socket, json.dumps(fraudtran))
+    #print(fraudfintransaction)
+    flowFile2 = session.create()
+    flowFile2 = session.write(flowFile2, WriteContentCallback(fraudfintransaction))
+    session.transfer(flowFile2, REL_SUCCESS)
+    session.commit()
+    ticks = 0
+    fraud_tick = random.randint(FRAUD_TICK_MIN, FRAUD_TICK_MAX)
+
+
 
