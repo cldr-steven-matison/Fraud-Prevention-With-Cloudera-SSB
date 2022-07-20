@@ -459,7 +459,7 @@ Now, let's run the query :
 
 [source,sql]
 ----
-INSERT INTO `fraud-detection-kudu`.`default_database`.`impala::default.fraudulent_txn`
+INSERT INTO `srm-fraud-detection-KUDU`.`default_database`.`default.fraudulent_txn`
 
 SELECT EVENT_TIME,ACCOUNT_ID,TRANSACTION_ID, cus.f_name as FIRST_NAME ,cus.l_name as LAST_NAME,cus.email as EMAIL ,cus.gender as GENDER, cus.phone as PHONE , cus.card as CARD , LAT, LON, AMOUNT
 
@@ -485,7 +485,7 @@ where
       AND HAVETOKM(cast (txn1.lat as string) , cast(txn1.lon as string) , cast(txn2.lat as string) , cast(txn2.lon as string)) > 1
       AND txn2.event_time  BETWEEN txn1.event_time - INTERVAL '10' MINUTE AND txn1.event_time
 ) FRAUD
-JOIN  `fraud-detection-kudu`.`default_database`.`impala::default.customers` cus
+JOIN  `srm-fraud-detection-KUDU`.`default_database`.`default.customers` cus
       ON cus.acc_id = FRAUD.ACCOUNT_ID
 
 ----
